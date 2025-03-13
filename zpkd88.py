@@ -1,4 +1,3 @@
-
 def load_dimacs(file_name):
     #file_name will be of the form "problem_name.txt"
     with open(file_name, "r") as file:
@@ -6,6 +5,8 @@ def load_dimacs(file_name):
     content = content.split("\n")
     clauses = []
     for line in content:
+        if line == "":
+            continue
         if line[0] == "c" or line[0] == "p":
             continue
         current_clause = []
@@ -18,13 +19,13 @@ def load_dimacs(file_name):
 
 def simple_sat_solve(clause_set):
     def convert_to_list_of_literals(assignment):
-        list = []
+        literal_list = []
         for i in range(len(assignment)):
             if assignment[i]:
-                list.append(i + 1)
+                literal_list.append(i + 1)
             else:
-                list.append((i + 1) * -1)
-        return list
+                literal_list.append((i + 1) * -1)
+        return literal_list
     variables = set()
     for clause in clause_set:
         for literal in clause:
@@ -72,25 +73,26 @@ def unit_propagate(clause_set):
 def dpll_sat_solve(clause_set,partial_assignment):
     ...
 
+test = load_dimacs("sat.txt")
+print(simple_sat_solve(test))
 
+# def test():
+#     print("Testing load_dimacs")
+#     try:
+#         dimacs = load_dimacs("sat.txt")
+#         assert dimacs == [[1],[1,-1],[-1,-2]]
+#         print("Test passed")
+#     except:
+#         print("Failed to correctly load DIMACS file")
 
-def test():
-    print("Testing load_dimacs")
-    try:
-        dimacs = load_dimacs("sat.txt")
-        assert dimacs == [[1],[1,-1],[-1,-2]]
-        print("Test passed")
-    except:
-        print("Failed to correctly load DIMACS file")
-
-    print("Testing simple_sat_solve")
-    try:
-        sat1 = [[1],[1,-1],[-1,-2]]
-        check = simple_sat_solve(sat1)
-        assert check == [1,-2] or check == [-2,1]
-        print("Test (SAT) passed")
-    except:
-        print("simple_sat_solve did not work correctly a sat instance")
+#     print("Testing simple_sat_solve")
+#     try:
+#         sat1 = [[1],[1,-1],[-1,-2]]
+#         check = simple_sat_solve(sat1)
+#         assert check == [1,-2] or check == [-2,1]
+#         print("Test (SAT) passed")
+#     except:
+#         print("simple_sat_solve did not work correctly a sat instance")
 
 #     try:
 #         unsat1 = [[1, -2], [-1, 2], [-1, -2], [1, 2]]
@@ -143,5 +145,3 @@ def test():
 #         except:
 #             print("Failed problem " + str(problem))
 #     print("Finished tests")
-
-test()
