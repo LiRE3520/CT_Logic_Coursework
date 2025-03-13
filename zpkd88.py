@@ -4,15 +4,20 @@ def load_dimacs(file_name):
     with open(file_name, "r") as file:
         content = file.read()
     content = content.split("\n")
-    line = 0
-    while content[line][0] == "c":
-        line += 1
-    header_line = content[line].split(" ")
-    for i in range(header_line[3]):
+    clauses = []
+    for line in content:
+        if line[0] == "c" or line[0] == "p":
+            continue
+        current_clause = []
+        split_line = line.split(" ")
+        for literal in split_line:
+            if literal != "0":
+                current_clause.append(int(literal))
+        clauses.append(current_clause)
+    return clauses
 
-    
 
-load_dimacs("sat.txt")
+
 
 def simple_sat_solve(clause_set):
     ...
@@ -31,14 +36,14 @@ def dpll_sat_solve(clause_set,partial_assignment):
 
 
 
-# def test():
-#     print("Testing load_dimacs")
-#     try:
-#         dimacs = load_dimacs("sat.txt")
-#         assert dimacs == [[1],[1,-1],[-1,-2]]
-#         print("Test passed")
-#     except:
-#         print("Failed to correctly load DIMACS file")
+def test():
+    print("Testing load_dimacs")
+    try:
+        dimacs = load_dimacs("sat.txt")
+        assert dimacs == [[1],[1,-1],[-1,-2]]
+        print("Test passed")
+    except:
+        print("Failed to correctly load DIMACS file")
 
 #     print("Testing simple_sat_solve")
 #     try:
@@ -100,3 +105,5 @@ def dpll_sat_solve(clause_set,partial_assignment):
 #         except:
 #             print("Failed problem " + str(problem))
 #     print("Finished tests")
+
+test()
