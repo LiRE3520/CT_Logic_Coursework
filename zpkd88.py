@@ -16,9 +16,6 @@ def load_dimacs(file_name):
         clauses.append(current_clause)
     return clauses
 
-
-
-
 def simple_sat_solve(clause_set):
     variables = set()
     for clause in clause_set:
@@ -35,7 +32,7 @@ def simple_sat_solve(clause_set):
             else:
                 current_assignment.append(True)
         assignments.append(current_assignment)
-    successful_assignment = []
+    successful_assignments = []
     for assignment in assignments:
         satisfies = True
         for clause in clause_set:
@@ -53,7 +50,17 @@ def simple_sat_solve(clause_set):
                 satisfies = False
                 break
         if satisfies:
-            successful_assignment.append(assignment)
+            successful_assignments.append(assignment)
+    final_output = []
+    for successful_assignment in successful_assignments:
+        clause = []
+        for i in range(len(successful_assignment)):
+            if successful_assignment[i]:
+                clause.append(i + 1)
+            else:
+                clause.append((i + 1) * -1)
+        final_output.append(clause)
+    return final_output
 
 
 def branching_sat_solve(clause_set,partial_assignment):
