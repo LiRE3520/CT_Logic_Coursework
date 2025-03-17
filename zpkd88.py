@@ -61,9 +61,33 @@ def simple_sat_solve(clause_set):
             return convert_to_list_of_literals(assignment)
     return False
 
-
 def branching_sat_solve(clause_set,partial_assignment):
-    ...
+    original_partial_assignment = partial_assignment
+    for literal in partial_assignment:
+        c = 0
+        while literal in clause_set[c]:
+            c += 1
+        branch = clause_set[c][0]
+        while literal in clause_set[c]:
+            c += 1
+        if branch in clause_set[c]:
+            partial_assignment.append[branch]
+        elif (branch * -1) in clause_set[c] and len(clause_set[c]) == 2:
+            if clause_set[c][0] == (branch * -1):
+                partial_assignment.append(clause_set[c][1])
+            else:
+                partial_assignment.append(clause_set[c][0])
+    if partial_assignment == original_partial_assignment:
+        return partial_assignment
+        
+
+        
+
+
+
+                
+
+
 
 
 def unit_propagate(clause_set):
