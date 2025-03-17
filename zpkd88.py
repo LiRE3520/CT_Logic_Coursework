@@ -61,20 +61,43 @@ def simple_sat_solve(clause_set):
             return convert_to_list_of_literals(assignment)
     return False
 
-def branching_sat_solve(clause_set,partial_assignment):
-    c = 0
-    while (c < len(clause_set)) or (branch is not None):
+def branching_sat_solve(clause_set, partial_assignment):
+    # Step 1: Check if the clause set is satisfied
+    branch = None
+    for clause in clause_set:
         for literal in partial_assignment:
-            if literal in clause_set[c]:
-                break
+            if literal in clause:
+                break  # This clause is satisfied, move to the next
         else:
-            branch = clause_set[c]
-        c += 1
-    if branch is None:
-        return partial_assignment
-    
+            # If we reach here, no literal from partial_assignment satisfies this clause
+            branch = clause  # Save the first unsatisfied clause
+            break
 
-        
+    if branch is None:  # No unsatisfied clause → solution found
+        return partial_assignment
+
+    # Step 2: Pick a variable to branch on (first unassigned literal)
+    chosen_var = None
+    for literal in branch:
+        if (literal * -1 not in partial_assignment) and (literal not in partial_assignment):
+            chosen_var = literal
+            break
+
+    # If no variable was found, return False (unsatisfiable)
+    if chosen_var is None:
+        return False
+
+    # Step 3: Try assigning `chosen_var` as True
+    new_assignment = partial_assignment + [chosen_var]
+    result = branching_sat_solve(clause_set, new_assignment)
+    if result:  # If it leads to a solution, return it
+        return result
+
+    # Step 4: Backtrack and try assigning `chosen_var` as False
+    new_assignment = partial_assignment + [-chosen_var]
+    return branching_sat_solve(clause_set, new_assignment)
+
+
 
         
 
@@ -92,8 +115,8 @@ def unit_propagate(clause_set):
 def dpll_sat_solve(clause_set,partial_assignment):
     ...
 
-test = load_dimacs("sat.txt")
-print(simple_sat_solve(test))
+test = load_dimacs("8queens.txt")
+print(branching_sat_solve(test, []))
 
 # def test():
 #     print("Testing load_dimacs")
@@ -121,14 +144,14 @@ print(simple_sat_solve(test))
 #     except:
 #         print("simple_sat_solve did not work correctly an unsat instance")
 
-#     print("Testing branching_sat_solve")
-#     try:
-#         sat1 = [[1],[1,-1],[-1,-2]]
-#         check = branching_sat_solve(sat1,[])
-#         assert check == [1,-2] or check == [-2,1]
-#         print("Test (SAT) passed")
-#     except:
-#         print("branching_sat_solve did not work correctly a sat instance")
+# print("Testing branching_sat_solve")
+# try:
+#     sat1 = [[1],[1,-1],[-1,-2]]
+#     check = branching_sat_solve(sat1,[])
+#     assert check == [1,-2] or check == [-2,1]
+#     print("Test (SAT) passed")
+# except:
+#     print("branching_sat_solve did not work correctly a sat instance")
 
 #     try:
 #         unsat1 = [[1, -2], [-1, 2], [-1, -2], [1, 2]]
