@@ -97,26 +97,43 @@ def branching_sat_solve(clause_set, partial_assignment):
     new_assignment = partial_assignment + [-chosen_var]
     return branching_sat_solve(clause_set, new_assignment)
 
-
-
-        
-
-
-
-                
-
-
-
-
 def unit_propagate(clause_set):
-    ...
+    no_unit_clause = False
+    while no_unit_clause == False:
+        for clause in clause_set:
+            if len(clause) == 1:
+                unit = clause[0]
+                break
+        else:
+            no_unit_clause = True
+        c = 0
+        while c < len(clause_set):
+            if unit in clause_set[c]:
+                clause_set.pop(c)
+                c -= 1
+            elif (unit * -1) in clause_set[c]:
+                clause_set[c].remove((unit * -1))
+            c += 1
+    return clause_set
+
+clause_set = [[1],[-1,2]]
+check = unit_propagate(clause_set)
+
+
+
+
+
+
+
+
+
 
 
 def dpll_sat_solve(clause_set,partial_assignment):
     ...
 
-test = load_dimacs("8queens.txt")
-print(branching_sat_solve(test, []))
+# test = load_dimacs("8queens.txt")
+# print(branching_sat_solve(test, []))
 
 # def test():
 #     print("Testing load_dimacs")
