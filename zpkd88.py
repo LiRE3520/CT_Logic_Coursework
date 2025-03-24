@@ -117,7 +117,50 @@ def unit_propagate(clause_set):
     return clause_set
 
 def dpll_sat_solve(clause_set,partial_assignment):
-    ...
+    def unit_propagate(clause_set):
+        true_assignments = []
+        no_unit_clause = False
+        while no_unit_clause == False:
+            for clause in clause_set:
+                if len(clause) == 1:
+                    unit = clause[0]
+                    true_assignments.append(unit)
+                    break
+            else:
+                no_unit_clause = True
+            c = 0
+            while c < len(clause_set) and no_unit_clause == False:
+                if unit in clause_set[c]:
+                    clause_set.pop(c)
+                    c -= 1
+                elif (unit * -1) in clause_set[c]:
+                    clause_set[c].remove((unit * -1))
+                c += 1
+        return clause_set, true_assignments
+    if clause_set == []:
+        return partial_assignment
+    elif [] in clause_set:
+        return False    
+    new_clause_set, new_assignments = unit_propagate(clause_set)
+    if new_assignments != []:
+        return dpll_sat_solve(new_clause_set, partial_assignment + new_assignments)
+    new_clause_set.append([clause_set[0][0]])
+    branch = dpll_sat_solve(new_clause_set, new_assignments)
+    if branch:
+        return branch   
+    new_clause_set.pop()
+    new_clause_set.append([(clause_set[0][0] * -1)])
+    branch = dpll_sat_solve(new_clause_set, new_assignments)
+    return branch
+
+
+
+
+
+
+
+
+
 
 # test = load_dimacs("8queens.txt")
 # print(branching_sat_solve(test, []))
