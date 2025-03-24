@@ -107,7 +107,7 @@ def unit_propagate(clause_set):
         else:
             no_unit_clause = True
         c = 0
-        while c < len(clause_set):
+        while c < len(clause_set) and no_unit_clause == False:
             if unit in clause_set[c]:
                 clause_set.pop(c)
                 c -= 1
@@ -115,19 +115,6 @@ def unit_propagate(clause_set):
                 clause_set[c].remove((unit * -1))
             c += 1
     return clause_set
-
-clause_set = [[1],[-1,2]]
-check = unit_propagate(clause_set)
-
-
-
-
-
-
-
-
-
-
 
 def dpll_sat_solve(clause_set,partial_assignment):
     ...
