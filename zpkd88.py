@@ -141,7 +141,7 @@ def dpll_sat_solve(clause_set,partial_assignment):
         return partial_assignment
     elif [] in clause_set:
         return False    
-    new_clause_set, new_assignments = unit_propagate(clause_set)
+    new_clause_set, new_assignments = unit_propagate(clause_set[:])
     if new_assignments != []:
         return dpll_sat_solve(new_clause_set, partial_assignment + new_assignments)
     new_clause_set.append([clause_set[0][0]])
@@ -220,17 +220,17 @@ def dpll_sat_solve(clause_set,partial_assignment):
 
 
 #     print("Testing DPLL") #Note, this requires load_dimacs to work correctly
-#     problem_names = ["sat.txt","unsat.txt"]
-#     for problem in problem_names:
-#         try:
-#             clause_set = load_dimacs(problem)
-#             check = dpll_sat_solve(clause_set,[])
-#             if problem == problem_names[1]:
-#                 assert (not check)
-#                 print("Test (UNSAT) passed")
-#             else:
-#                 assert check == [1,-2] or check == [-2,1]
-#                 print("Test (SAT) passed")
-#         except:
-#             print("Failed problem " + str(problem))
+problem_names = ["sat.txt","unsat.txt"]
+for problem in problem_names:
+    try:
+        clause_set = load_dimacs(problem)
+        check = dpll_sat_solve(clause_set,[])
+        if problem == problem_names[1]:
+            assert (not check)
+            print("Test (UNSAT) passed")
+        else:
+            assert check == [1,-2] or check == [-2,1]
+            print("Test (SAT) passed")
+    except:
+        print("Failed problem " + str(problem))
 #     print("Finished tests")
