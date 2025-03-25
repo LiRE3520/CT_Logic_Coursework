@@ -1,5 +1,4 @@
 def load_dimacs(file_name):
-    #file_name will be of the form "problem_name.txt"
     with open(file_name, "r") as file:
         content = file.read()
     content = content.split("\n")
@@ -62,38 +61,27 @@ def simple_sat_solve(clause_set):
     return False
 
 def branching_sat_solve(clause_set, partial_assignment):
-    # Step 1: Check if the clause set is satisfied
     branch = None
     for clause in clause_set:
         for literal in partial_assignment:
             if literal in clause:
-                break  # This clause is satisfied, move to the next
+                break
         else:
-            # If we reach here, no literal from partial_assignment satisfies this clause
-            branch = clause  # Save the first unsatisfied clause
+            branch = clause
             break
-
-    if branch is None:  # No unsatisfied clause → solution found
+    if branch is None:
         return partial_assignment
-
-    # Step 2: Pick a variable to branch on (first unassigned literal)
     chosen_var = None
     for literal in branch:
         if (literal * -1 not in partial_assignment) and (literal not in partial_assignment):
             chosen_var = literal
             break
-
-    # If no variable was found, return False (unsatisfiable)
     if chosen_var is None:
         return False
-
-    # Step 3: Try assigning `chosen_var` as True
     new_assignment = partial_assignment + [chosen_var]
     result = branching_sat_solve(clause_set, new_assignment)
-    if result:  # If it leads to a solution, return it
+    if result:
         return result
-
-    # Step 4: Backtrack and try assigning `chosen_var` as False
     new_assignment = partial_assignment + [-chosen_var]
     return branching_sat_solve(clause_set, new_assignment)
 
@@ -153,100 +141,3 @@ def dpll_sat_solve(clause_set,partial_assignment):
     new_clause_set.append([(new_clause_set[0][0] * -1)])
     branch = dpll_sat_solve(new_clause_set, partial_assignment)
     return branch
-
-
-test = load_dimacs("LNP-6.txt")
-
-import time
-
-# Start timing
-start_time = time.time()
-
-# Run your function
-print(dpll_sat_solve(test, []))
-
-# End timing
-end_time = time.time()
-
-# Print execution time
-print(f"Execution time: {end_time - start_time:.6f} seconds")
-
-
-
-
-
-
-
-
-# test = load_dimacs("8queens.txt")
-# print(branching_sat_solve(test, []))
-
-# def test():
-#     print("Testing load_dimacs")
-#     try:
-#         dimacs = load_dimacs("sat.txt")
-#         assert dimacs == [[1],[1,-1],[-1,-2]]
-#         print("Test passed")
-#     except:
-#         print("Failed to correctly load DIMACS file")
-
-#     print("Testing simple_sat_solve")
-#     try:
-#         sat1 = [[1],[1,-1],[-1,-2]]
-#         check = simple_sat_solve(sat1)
-#         assert check == [1,-2] or check == [-2,1]
-#         print("Test (SAT) passed")
-#     except:
-#         print("simple_sat_solve did not work correctly a sat instance")
-
-#     try:
-#         unsat1 = [[1, -2], [-1, 2], [-1, -2], [1, 2]]
-#         check = simple_sat_solve(unsat1)
-#         assert (not check)
-#         print("Test (UNSAT) passed")
-#     except:
-#         print("simple_sat_solve did not work correctly an unsat instance")
-
-# print("Testing branching_sat_solve")
-# try:
-#     sat1 = [[1],[1,-1],[-1,-2]]
-#     check = branching_sat_solve(sat1,[])
-#     assert check == [1,-2] or check == [-2,1]
-#     print("Test (SAT) passed")
-# except:
-#     print("branching_sat_solve did not work correctly a sat instance")
-
-#     try:
-#         unsat1 = [[1, -2], [-1, 2], [-1, -2], [1, 2]]
-#         check = branching_sat_solve(unsat1,[])
-#         assert (not check)
-#         print("Test (UNSAT) passed")
-#     except:
-#         print("branching_sat_solve did not work correctly an unsat instance")
-
-
-#     print("Testing unit_propagate")
-#     try:
-#         clause_set = [[1],[-1,2]]
-#         check = unit_propagate(clause_set)
-#         assert check == []
-#         print("Test passed")
-#     except:
-#         print("unit_propagate did not work correctly")
-
-
-#     print("Testing DPLL") #Note, this requires load_dimacs to work correctly
-# problem_names = ["sat.txt","unsat.txt"]
-# for problem in problem_names:
-#     try:
-#         clause_set = load_dimacs(problem)
-#         check = dpll_sat_solve(clause_set,[])
-#         if problem == problem_names[1]:
-#             assert (not check)
-#             print("Test (UNSAT) passed")
-#         else:
-#             assert check == [1,-2] or check == [-2,1]
-#             print("Test (SAT) passed")
-#     except:
-#         print("Failed problem " + str(problem))
-#     print("Finished tests")
