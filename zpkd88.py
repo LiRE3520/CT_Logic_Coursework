@@ -155,7 +155,7 @@ def dpll_sat_solve(clause_set,partial_assignment):
     return branch
 
 
-test = load_dimacs("8queens.txt")
+test = load_dimacs("LNP-6.txt")
 
 import time
 
