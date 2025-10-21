@@ -1,3 +1,5 @@
+import time
+
 def load_dimacs(file_name):
     with open(file_name, "r") as file:
         content = file.read()
@@ -141,3 +143,9 @@ def dpll_sat_solve(clause_set,partial_assignment):
     new_clause_set.append([(new_clause_set[0][0] * -1)])
     branch = dpll_sat_solve(new_clause_set, partial_assignment)
     return branch
+
+clauses = load_dimacs("8queens.txt")
+start_time = time.perf_counter()
+solution = dpll_sat_solve(clauses, [])
+end_time = time.perf_counter()
+print(f"Time taken: {end_time - start_time:.6f} seconds")
